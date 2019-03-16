@@ -19,8 +19,20 @@ pipeline {
                 }
             }
         }
-
-
+        stage ('sonarqube'){
+            environment {
+                scanerHome = tool 'sonarqubescanner'
+            }
+            steps {
+                WithSonarQubeEnv ('sonarqube'){
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+                timeout (time: 10, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+                    
         stage ('Deployment Stage') {
             steps {
                 withMaven(maven : 'LocalMaven') {
