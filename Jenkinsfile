@@ -1,7 +1,5 @@
 pipeline {
-    agent any {
-    node (mavenlabel 'Slave1')
-    }
+    agent any 
     stages 
         stage ('Compile Stage') {
 
