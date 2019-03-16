@@ -19,8 +19,9 @@ pipeline {
                 }
             }
         }
-
-
+        stage('Get Approval'){
+            input "deploy to QA"
+        }
         stage ('Deployment Stage') {
             steps {
                 withMaven(maven : 'Localmaven') {
