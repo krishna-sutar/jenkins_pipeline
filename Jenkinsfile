@@ -37,6 +37,7 @@ pipeline {
             steps {
                 withMaven(maven : 'LocalMaven') {
                     sh 'mvn install'
+                    sh 'mvn sonar:sonar'
                 }
             }
         }
