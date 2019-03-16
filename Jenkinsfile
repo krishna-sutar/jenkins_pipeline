@@ -1,6 +1,5 @@
 pipeline {
-    node ('slave1'){
-        build 'my-pipeline'
+    agent any
     }
 
     stages {
