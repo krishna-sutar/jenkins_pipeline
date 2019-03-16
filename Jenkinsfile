@@ -7,11 +7,25 @@ pipeline {
             steps {
                 withMaven(maven : 'LocalMaven') {
                     sh 'mvn clean compile'
-                    sh 'mvn sonar:sonar'
+                    
                 }
             }
         }
 
+     stage ('sonarqube'){
+            environment {
+                scanerHome = tool 'sonarqubescanner'
+            }
+            steps {
+                withSonarQubeEnv ('sonarqube'){
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+                timeout (time: 10, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
         stage ('Testing Stage') {
 
             steps {
