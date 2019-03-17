@@ -13,19 +13,11 @@ pipeline {
         }
 
      stage ('sonarqube'){
-            environment {
-                scanerHome = tool 'sonarqubescanner'
-            }
-            steps {
+         def mvnHome = tool name: 'maven-3', type: 'maven'
                 withSonarQubeEnv ('sonarqube'){
-                    sh "${scannerHome}/bin/sonar-scanner"
+                    sh "${mvnHome}/bin/mvn sonar:sonar"
                 }
-                timeout (time: 10, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                    sh 'mvn sonar:sonar'
-                }
-            }
-        }
+     }
         stage ('Testing Stage') {
 
             steps {
