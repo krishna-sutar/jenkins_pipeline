@@ -22,10 +22,11 @@ pipeline {
         }
         
                 
-        stage ('Build on Slave Stage') {
+        stage ('Build on slave1') {
 
             steps {
                 withMaven(maven : 'LocalMaven') {
+                    agent {mavenlabel 'slave1'}
                     sh 'mvn package'
                 }
             }
