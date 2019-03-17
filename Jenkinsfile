@@ -23,12 +23,10 @@ pipeline {
         
                 
         stage ('Build on slave1') {
-            node ('Slave1') {
 
             steps {
                 withMaven(maven : 'LocalMaven') {
                     sh 'mvn package'
-                }
                     }
                 }
             }
