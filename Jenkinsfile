@@ -1,22 +1,17 @@
 pipeline {
-    agent any 
-    
+    agent { label 'mavenlabel' }
+
     stages {
         stage ('Compile Stage') {
 
             steps {
                 withMaven(maven : 'LocalMaven') {
                     sh 'mvn clean compile'
-                    
                 }
             }
         }
-
-     stage ('SonarQube Analysis') {
-                withSonarQubeEnv ('sonarqube') {
-                    sh 'mvn package sonar:sonar'
-                }
-     }
+        
+            
         stage ('Testing Stage') {
 
             steps {
@@ -25,13 +20,32 @@ pipeline {
                 }
             }
         }
-   
-                    
+        
+                
+        stage ('Build on Slave Stage') {
+
+            steps {
+                withMaven(maven : 'LocalMaven') {
+                    sh 'mvn package'
+                }
+            }
+        }
+        
+        
+        stage ('Building and Integrating Sonar') {
+
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh 'mvn package sonar:sonar'
+                }
+            }
+        }
+        
+        
         stage ('Deployment Stage') {
             steps {
                 withMaven(maven : 'LocalMaven') {
                     sh 'mvn install'
-                    
                 }
             }
         }
