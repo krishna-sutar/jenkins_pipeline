@@ -26,7 +26,7 @@ pipeline {
 
             steps {
                 withMaven(maven : 'LocalMaven') {
-                    node('slave1')
+                    node('mavenlabel')
                     sh 'mvn package'
                 }
             }
