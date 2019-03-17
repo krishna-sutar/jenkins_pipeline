@@ -26,13 +26,10 @@ pipeline {
 
             steps {
                 withMaven(maven : 'LocalMaven') {
-                    node('Slave1') {
                     sh 'mvn package'
                     }
                 }
             }
-        }
-        
         
         stage ('Building and Integrating Sonar') {
 
