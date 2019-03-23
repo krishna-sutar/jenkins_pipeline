@@ -10,14 +10,8 @@ pipeline {
                 }
             }
         }
-	 stage ('Deploy to tomcat') {
-	    steps {
-		    sshagent(['tomcat-dev']) {
-			    sh 'scp -o StrictHostKeyChecking=no target/*.war ec2-user@172.31.17.114:/usr/share/tomcat/webapps
-		    }
-	    }
-	 }
-	            
+        
+            
         stage ('Testing Stage') {
 
             steps {
@@ -27,7 +21,25 @@ pipeline {
             }
         }
         
-             
+                
+        stage ('Build on slave1') {
+
+            steps {
+                withMaven(maven : 'LocalMaven') {
+                    sh 'mvn package'
+                    }
+                }
+            }
+        
+        stage ('Building and Integrating Sonar') {
+
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh 'mvn package sonar:sonar'
+                }
+            }
+        }
+        
         
         stage ('Deployment Stage') {
             steps {
