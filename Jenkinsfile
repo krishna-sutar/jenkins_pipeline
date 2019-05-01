@@ -5,34 +5,46 @@ pipeline {
         stage ('Compile Stage') {
 
             steps {
-                withMaven(maven : 'LocalMaven') {
+                withMaven(maven : 'Apache Maven 3.5.2') {
                     sh 'mvn clean compile'
                 }
             }
         }
-        stage('deploy to Tomcat') {
-		steps {	     
-		 sshagent(['tomcat-dev']) {
-		     sh 'scp -o StrictHostKeyChecking=no target/*.war ec2-user@13.233.195.169:/usr/share/tomcat/webapps'
-		 }
-	     }
-	}
         
             
         stage ('Testing Stage') {
 
             steps {
-                withMaven(maven : 'LocalMaven') {
+                withMaven(maven : 'Apache Maven 3.5.2') {
                     sh 'mvn test'
                 }
             }
         }
         
-       
+                
+        stage ('Build on Slave Stage') {
+
+            steps {
+                withMaven(maven : 'Apache Maven 3.5.2') {
+                    sh 'mvn package'
+                }
+            }
+        }
+        
+        
+        stage ('Building and Integrating Sonar') {
+
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh 'mvn package sonar:sonar'
+                }
+            }
+        }
+        
         
         stage ('Deployment Stage') {
             steps {
-                withMaven(maven : 'LocalMaven') {
+                withMaven(maven : 'Apache Maven 3.5.2') {
                     sh 'mvn install'
                 }
             }
